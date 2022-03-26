@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
+/**
+ * Used to make animation when hovering a card
+ */
 class OnHoverCard extends StatefulWidget {
   final Widget child;
 

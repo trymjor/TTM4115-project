@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:web/widgets/chess_game_card.dart';
 import 'package:web/widgets/on_hover_card.dart';
+import 'package:web/widgets/quiz_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
@@ -32,9 +33,9 @@ class _HomePage extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: const <Widget>[
                 OnHoverCard(child: ChessGameCard()),
-                OnHoverCard(child: ChessGameCard()),
+                OnHoverCard(child: QuizCard()),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -44,6 +45,7 @@ class _HomePage extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             FloatingActionButton(
+              heroTag: "Join Button",
               onPressed: () {
                 print("Lobby joined.");
               },
@@ -53,6 +55,7 @@ class _HomePage extends State<HomePage> {
               height: 10,
             ),
             FloatingActionButton(
+                heroTag: "Create Button",
                 onPressed: () {
                   print("Lobby created.");
                 },
