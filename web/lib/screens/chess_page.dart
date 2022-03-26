@@ -20,25 +20,14 @@ class _ChessPage extends State<ChessPage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(30),
-              child: Text(
-                widget.title,
-                style: Theme.of(context).textTheme.headline2,
-              ),
-            ),
-            Container(
-              height: screenSize.height * 0.5,
-              width: screenSize.width * 0.5,
-              child: ChessBoard(
-                controller: controller,
-                boardColor: BoardColor.orange,
-                boardOrientation: PlayerColor.white,
-              ),
-            ),
-          ],
+        child: Container(
+          height: 600,
+          width: 600,
+          child: ChessBoard(
+            controller: controller,
+            boardColor: BoardColor.orange,
+            boardOrientation: PlayerColor.white,
+          ),
         ),
       ),
     );
