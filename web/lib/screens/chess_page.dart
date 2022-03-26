@@ -21,8 +21,8 @@ class _ChessPage extends State<ChessPage> {
       ),
       body: Center(
         child: Container(
-          height: 600,
-          width: 600,
+          height: screenSize.height * 0.7,
+          width: screenSize.height * 0.7,
           child: ChessBoard(
             controller: controller,
             boardColor: BoardColor.orange,
