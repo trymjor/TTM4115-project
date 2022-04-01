@@ -2,7 +2,6 @@ from stmpy import Machine
 import stmpy
 #from graphviz import Source
 
-
 # Transitions
 initate = {'source': 'initial',
            'target': 'idle'}
