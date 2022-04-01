@@ -1,6 +1,6 @@
 from stmpy import Machine
 import stmpy
-#from graphviz import Source
+#from graphviz import Source #skal man ha d her
 
 # Transitions
 initate = {'source': 'initial',
