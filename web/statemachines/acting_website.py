@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqtt
 from threading import Thread
 broker, port = "mqtt.item.ntnu.no", 1883
+import time
 
 
 class MQTT_Client_1:
@@ -12,25 +13,6 @@ class MQTT_Client_1:
 
     def on_message(self, client, userdata, msg):
         print("on_message(): topic: {}".format(msg.topic))
-        self.count = self.count + 1
-        try:
-            place1 = "gruppe9/raspb_pi/status/chess"
-            place2 = "gruppe9/raspb_pi/status/vc"
-
-            self.client.publish(place2, "first_person_remote")
-            self.client.publish(place2, "no_people_left")
-
-            self.client.publish(place1, "chess_turn")
-            self.client.publish(place1, "not_chess_turn")
-            
-
-            #print("Printing payload: {} in {}?".format(msg.payload, place1))
-        except Exception as e:
-            print(e)
-
-        if self.count == 20:
-            self.client.disconnect()
-            print("disconnected after 5 forwards")
 
     def start(self, broker, port):
         self.client = mqtt.Client()
@@ -44,6 +26,38 @@ class MQTT_Client_1:
         try:
             thread = Thread(target=self.client.loop_forever)
             thread.start()
+            self.count = self.count + 1
+            while(self.count<20):
+                    
+                try:
+                    place1 = "gruppe9/raspb_pi/status/chess"
+                    place2 = "gruppe9/raspb_pi/status/vc"
+                    print("Sending messages")
+                    self.client.publish(place2, "first_person_remote")
+                    time.sleep(5)
+                    self.client.publish(place2, "no_people_left")
+                    time.sleep(5)
+                    self.client.publish(place1, "chess_turn")
+                    time.sleep(5)
+                    self.client.publish(place1, "not_chess_turn")
+                    time.sleep(5)
+                    '''
+                    self.client.publish(place2, "first_person_remote")
+                    time.sleep(5)
+                    self.client.publish(place1, "chess_turn")
+                    time.sleep(5)
+                    self.client.publish(place2, "no_people_left")
+                    time.sleep(5)
+                    self.client.publish(place1, "not_chess_turn")
+                    time.sleep(5)'''
+                    print("Finished sending messages")
+                    
+
+                    #print("Printing payload: {} in {}?".format(msg.payload, place1))
+                except Exception as e:
+                    print(e)
+
+            
         except KeyboardInterrupt:
             print("Interrupted")
             self.client.disconnect()

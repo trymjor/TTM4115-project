@@ -30,17 +30,17 @@ class Raspberry_Pi:
     def turn_chess_light_on(self):
         print("Slo på sjakk lys")
 
-    def turn_vc_light_off(self):
+    def turn_entire_light_on(self):
         '''
         print("Tock! {}".format(self.tocks))
         self.tocks = self.tocks + 1
         self.mqtt_client.publish("gruppe9/raspb_pi/{}".format(type), "Turning off light {}".format(light))
         '''
 
-        print("Slo av vc lys")
+        print("Slo på hele lyset")
 
-    def turn_chess_light_off(self):
-        print("Slo av sjakk lys")
+    def turn__light_off(self):
+        print("Slo av hele lyset")
 
 
 
@@ -50,6 +50,7 @@ init = {
     'target': 'idle',
     'effect': 'on_init'}
 
+#Chess
 chess_turn_enabled = {
     'trigger': 'chess_turn',
     'source': 'idle',
@@ -60,6 +61,7 @@ chess_turn_disabled = {
     'source': 'chess',
     'target': 'idle'}
 
+#VC
 videocall_enable_1 = {
     'trigger': 'first_person_remote',
     'source': 'idle',
@@ -75,19 +77,42 @@ videocall_disable = {
     'source': 'videocall',
     'target': 'idle'}
 
+#Both
+vc_to_chess = {
+    'trigger': 'chess_turn',
+    'source': "chess",
+    'target': "vc_chess"
+}
+
+chess_to_vc_1 = {
+    'trigger': 'first_person_remote',
+    'source': 'videocall',
+    'target': 'vc_chess'
+}
+
+chess_to_vc_2 = {
+    'trigger': 'first_person_detected',
+    'source': 'videocall',
+    'target': 'vc_chess'
+}
+
 
 #States
-idle = {'name': 'idle'}
+idle = {
+    'name': 'idle',
+    'entry': 'turn_light_off'}
 
 chess = {
     'name': 'chess',
-    'entry': 'turn_chess_light_on',
-    'exit': 'turn_chess_light_off'}
+    'entry': 'turn_chess_light_on'}
 
 videocall = {
     'name': 'videocall',
-    'entry': 'turn_vc_light_on',
-    'exit': 'turn_vc_light_off'}
+    'entry': 'turn_vc_light_on'}
+
+vc_chess = {
+    'name': 'vc_chess',
+    'entry': 'turn_entire_light_on'}
 
 
 #MQTT
