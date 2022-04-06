@@ -45,41 +45,49 @@ class Raspberry_Pi:
 
 
 # Transitions
-init = {'source': 'initial',
-        'target': 'idle',
-        'effect': 'on_init'}
+init = {
+    'source': 'initial',
+    'target': 'idle',
+    'effect': 'on_init'}
 
-chess_turn_enabled = {'trigger': 'chess_turn',
-                      'source': 'idle',
-                      'target': 'chess'}
+chess_turn_enabled = {
+    'trigger': 'chess_turn',
+    'source': 'idle',
+    'target': 'chess'}
 
-chess_turn_disabled = {'trigger': 'not_chess_turn',
-                       'source': 'chess',
-                       'target': 'idle'}
+chess_turn_disabled = {
+    'trigger': 'not_chess_turn',
+    'source': 'chess',
+    'target': 'idle'}
 
-videocall_enable_1 = {'trigger': 'first_person_remote',
-                      'source': 'idle',
-                      'target': 'videocall'}
+videocall_enable_1 = {
+    'trigger': 'first_person_remote',
+    'source': 'idle',
+    'target': 'videocall'}
 
-videocall_enable_2 = {'trigger': 'first_person_detected',
-                      'source': 'idle',
-                      'target': 'videocall'}
+videocall_enable_2 = {
+    'trigger': 'first_person_detected',
+    'source': 'idle',
+    'target': 'videocall'}
 
-videocall_disable = {'trigger': 'no_people_left',
-                     'source': 'videocall',
-                     'target': 'idle'}
+videocall_disable = {
+    'trigger': 'no_people_left',
+    'source': 'videocall',
+    'target': 'idle'}
 
 
 #States
 idle = {'name': 'idle'}
 
-chess = {'name': 'chess',
-         'entry': 'turn_chess_light_on',
-         'exit': 'turn_chess_light_off'}
+chess = {
+    'name': 'chess',
+    'entry': 'turn_chess_light_on',
+    'exit': 'turn_chess_light_off'}
 
-videocall = {'name': 'videocall',
-             'entry': 'turn_vc_light_on',
-             'exit': 'turn_vc_light_off'}
+videocall = {
+    'name': 'videocall',
+    'entry': 'turn_vc_light_on',
+    'exit': 'turn_vc_light_off'}
 
 
 #MQTT
@@ -94,8 +102,7 @@ class MQTT_Client_1:
         print("on_connect(): {}".format(mqtt.connack_string(rc)))
 
     def on_message(self, client, userdata, msg):
-        
-        print("on_message(): topic: {}".format(msg.topic))
+        #print("on_message(): topic: {}".format(msg.topic))
         self.stm_driver.send(msg.payload.decode("utf-8"), "raspb_pi")
 
     def start(self, broker, port):
@@ -115,16 +122,16 @@ class MQTT_Client_1:
 
 
 
-raspb_pi = Raspberry_Pi()
-raspb_pi_machine = Machine(name='raspb_pi', transitions=[init, chess_turn_enabled, chess_turn_disabled, videocall_enable_1, videocall_enable_2, videocall_disable], obj=None, states=[idle, chess, videocall])
-raspb_pi.stm = raspb_pi_machine
+raspb = Raspberry_Pi()
+raspb_pi_machine = Machine(name='raspb_pi', transitions=[init, chess_turn_enabled, chess_turn_disabled, videocall_enable_1, videocall_enable_2, videocall_disable], obj=raspb, states=[idle, chess, videocall])
+raspb.stm = raspb_pi_machine
 
 
 driver = Driver()
 driver.add_machine(raspb_pi_machine)
 
 myclient = MQTT_Client_1()
-raspb_pi.mqtt_client = myclient.client
+raspb.mqtt_client = myclient.client
 myclient.stm_driver = driver
 
 driver.start()
