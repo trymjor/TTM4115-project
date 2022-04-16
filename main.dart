@@ -28,7 +28,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  MqttConn mqc = MqttConn();
   ChessBoardController controller = ChessBoardController();
 
   String isGameOver() {
@@ -57,7 +56,7 @@ class _HomePageState extends State<HomePage> {
               boardColor: BoardColor.orange,
               boardOrientation: PlayerColor.white,
               onMove: () {
-                mqc.sendFen(controller.getFen());
+                sendFen(controller.getFen());
               },
             ),
           ),
@@ -87,9 +86,8 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
 
-class MqttConn {
+  var gameFEN = "";
   final client = MqttBrowserClient('ws://test.mosquitto.org', '')
     ..setProtocolV311()
     ..keepAlivePeriod = 2000
@@ -110,7 +108,14 @@ class MqttConn {
     builder.addString(fen);
     client.subscribe(pubTopic, MqttQos.exactlyOnce);
     client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload!);
-    await MqttUtilities.asyncSleep(20);
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+      final recMess = c![0].payload as MqttPublishMessage;
+      gameFEN =
+          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      controller.loadFen(gameFEN);
+      print(controller.getFen());
+    });
+    await MqttUtilities.asyncSleep(60);
     client.unsubscribe("cudo_test");
     print("disconnecting");
     client.disconnect();
