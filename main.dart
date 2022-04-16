@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
       print(controller.getFen());
     });
     await MqttUtilities.asyncSleep(60);
-    client.unsubscribe("cudo_test");
+    client.unsubscribe("ramindra3");
     print("disconnecting");
     client.disconnect();
     return;
