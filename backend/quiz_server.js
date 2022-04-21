@@ -3,8 +3,10 @@ const axios = require("axios").default;
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database(":memory:");
 const app = express();
-const port = 3000;
+const cors = require("cors");
+const port = process.env.PORT || 3000;
 app.use(express.json());
+app.use(cors());
 
 // Create room and player database table
 db.run(
@@ -140,8 +142,8 @@ app.get("/score/:room_id/:player_name", (req, res) => {
   const player_name = req?.params?.player_name;
   // Get all the questions from the room
   db.get(
-    "SELECT * FROM player JOIN room USING(room_id) WHERE name=?;",
-    [player_name],
+    "SELECT * FROM player JOIN room USING(room_id) WHERE name=? AND room_id=?;",
+    [player_name, room_id],
     function (err, row) {
       if (err) {
         res.status(500).send(err);
@@ -164,6 +166,8 @@ app.get("/score/:room_id/:player_name", (req, res) => {
     }
   );
 });
+
+app.use(express.static("public"));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

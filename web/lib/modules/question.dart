@@ -1,25 +1,11 @@
 class Question {
-  late final String category;
   late final String question;
-  late final String correctAnswer;
   late final List answersChoices;
 
-  Question(
-      {required this.category,
-      required this.question,
-      required this.correctAnswer,
-      required this.answersChoices});
-
-  String getCategory() {
-    return category;
-  }
+  Question({required this.question, required this.answersChoices});
 
   String getQuestion() {
     return question;
-  }
-
-  String getAnswer() {
-    return correctAnswer;
   }
 
   List getAnswerChoices() {

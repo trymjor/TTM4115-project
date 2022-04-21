@@ -2,10 +2,9 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter_chess_board/flutter_chess_board.dart';
 import 'package:web/modules/question.dart';
-import 'package:web/widgets/quiz_widgets/quiz_answer.dart';
-import 'package:web/widgets/quiz_widgets/quiz_question.dart';
+//import 'package:web/widgets/quiz_widgets/quiz_answer.dart';
+//import 'package:web/widgets/quiz_widgets/quiz_question.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({Key? key, required this.title}) : super(key: key);
@@ -18,7 +17,8 @@ class _QuizPage extends State<QuizPage> {
   List<Question> quizQuestions = [];
   late Question currentQuestion;
   int _currentQuestionIndex = 0;
-  int _totalScore = 0;
+  List<String> _answers = [];
+  String _score = "";
 
   @override
   void initState() {
@@ -64,22 +64,12 @@ class _QuizPage extends State<QuizPage> {
   }
 
   Future<void> fetchQuestions() async {
-    final response = await http.get(Uri.parse(
-        'https://opentdb.com/api.php?amount=10&category=9&difficulty=medium&type=multiple'));
-    Map<String, dynamic> data =
-        jsonDecode(response.body.replaceAll("&quot;", "'"));
-    for (var entry in data['results']) {
-      List<String> answers = [];
-      for (var answer in entry["incorrect_answers"]) {
-        answers.add(answer);
-      }
-      answers.add(entry["correct_answer"]);
+    final response = await http.get(Uri.parse("http://localhost:3000/room/1"));
+    Map<String, dynamic> data = jsonDecode(response.body);
+    for (var entry in data['questions']) {
       final question = Question(
-          category: entry['category'],
           question: entry['question'],
-          correctAnswer: entry['correct_answer'],
-          answersChoices: answers);
-      question.answersChoices.shuffle();
+          answersChoices: entry['possible_answers']);
       quizQuestions.add(question);
     }
   }
@@ -110,23 +100,32 @@ class _QuizPage extends State<QuizPage> {
     );
   }
 
-  void _getNextQuestion() {
-    if (_currentQuestionIndex > quizQuestions.length) {
-      print("Score: " + _totalScore.toString());
-      return;
+  void _getScore() async {
+    // Send answsers to server
+    // TODO: add name
+    Map data = {'answers': _answers, "name": "emir"};
+    await http.post(Uri.parse("http://localhost:3000/room/1/"),
+        headers: {"Content-Type": "application/json"}, body: json.encode(data));
+    final response =
+        await http.get(Uri.parse("http://localhost:3000/score/1/emir"));
+    _score = response.body;
+  }
+
+  void _getNextQuestion() async {
+    if (_currentQuestionIndex >= quizQuestions.length - 1) {
+      print("Quiz over");
+      _getScore();
+    } else {
+      _currentQuestionIndex++;
+      _updateQuestionText();
+      getQuestionChoices();
     }
-    _currentQuestionIndex++;
-    _updateQuestionText();
-    getQuestionChoices();
   }
 
   _checkAnswer(String answer) {
-    if (answer == quizQuestions[_currentQuestionIndex].correctAnswer) {
-      _totalScore++;
-    }
+    _answers.add(answer);
     _getNextQuestion();
-    print(
-        "Total score: $_totalScore - Questions left: ${10 - _currentQuestionIndex}");
+    print("Questions left: ${10 - _currentQuestionIndex}");
   }
 
   void _updateQuestionText() {

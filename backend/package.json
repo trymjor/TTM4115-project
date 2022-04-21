@@ -4,12 +4,14 @@
   "description": "a quiz server",
   "main": "quiz_server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node quiz_server.js"
   },
   "author": "Emir Derouiche",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.26.1",
+    "cors": "^2.8.5",
     "express": "^4.17.3",
     "sqlite3": "^5.0.2"
   }
