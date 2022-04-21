@@ -1,5 +1,14 @@
+import 'dart:async';
+
+import 'package:agora_rtc_engine/rtc_engine.dart';
+import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
+import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 import 'package:flutter/material.dart';
-import 'package:flutter_chess_board/flutter_chess_board.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+const appId = "cef93f567e5e45c18b198d48c55ce486";
+const channel = "TTM4115_1";
+const token = "3b0d9a27b8bd4e52ad52ca3ab35744b3";
 
 class VideoPage extends StatefulWidget {
   const VideoPage({Key? key, required this.title}) : super(key: key);
@@ -9,15 +18,90 @@ class VideoPage extends StatefulWidget {
 }
 
 class _VideoPage extends State<VideoPage> {
-  ChessBoardController controller = ChessBoardController();
+  int? _remoteUid;
+  bool _localUserJoined = false;
+  late RtcEngine _engine;
+
   @override
-  Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(widget.title),
+  void initState() {
+    super.initState();
+    initAgora();
+  }
+
+  Future<void> initAgora() async {
+    // retrieve permissions
+    await [Permission.microphone, Permission.camera].request();
+
+    //create the engine
+    _engine = await RtcEngine.create(appId);
+    await _engine.enableVideo();
+    _engine.setEventHandler(
+      RtcEngineEventHandler(
+        joinChannelSuccess: (String channel, int uid, int elapsed) {
+          print("local user $uid joined");
+          setState(() {
+            _localUserJoined = true;
+          });
+        },
+        userJoined: (int uid, int elapsed) {
+          print("remote user $uid joined");
+          setState(() {
+            _remoteUid = uid;
+          });
+        },
+        userOffline: (int uid, UserOfflineReason reason) {
+          print("remote user $uid left channel");
+          setState(() {
+            _remoteUid = null;
+          });
+        },
       ),
     );
+
+    await _engine.joinChannel(token, channel, null, 0);
+  }
+
+  // Create UI with local view and remote view
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Agora Video Call'),
+      ),
+      body: Stack(
+        children: [
+          Center(
+            child: _remoteVideo(),
+          ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Container(
+              width: 100,
+              height: 150,
+              child: Center(
+                child: _localUserJoined
+                    ? RtcLocalView.SurfaceView()
+                    : CircularProgressIndicator(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Display remote user's video
+  Widget _remoteVideo() {
+    if (_remoteUid != null) {
+      return RtcRemoteView.SurfaceView(
+        uid: _remoteUid!,
+        channelId: channel,
+      );
+    } else {
+      return Text(
+        'Please wait for remote user to join',
+        textAlign: TextAlign.center,
+      );
+    }
   }
 }
