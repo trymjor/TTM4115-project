@@ -47,7 +47,7 @@ class _QuizPage extends State<QuizPage> {
             ),
             Container(
               width: 500,
-              height: 800,
+              height: 500,
               child: getQuestionChoices(),
             ),
           ],
@@ -65,7 +65,7 @@ class _QuizPage extends State<QuizPage> {
 
   Future<void> fetchQuestions() async {
     final response = await http.get(Uri.parse(
-        'https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple'));
+        'https://opentdb.com/api.php?amount=10&category=9&difficulty=medium&type=multiple'));
     Map<String, dynamic> data =
         jsonDecode(response.body.replaceAll("&quot;", "'"));
     for (var entry in data['results']) {
@@ -115,8 +115,8 @@ class _QuizPage extends State<QuizPage> {
       print("Score: " + _totalScore.toString());
       return;
     }
-    _updateQuestionText();
     _currentQuestionIndex++;
+    _updateQuestionText();
     getQuestionChoices();
   }
 
