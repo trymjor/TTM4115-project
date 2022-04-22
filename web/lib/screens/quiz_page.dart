@@ -9,8 +9,10 @@ import 'package:web/modules/question.dart';
 final String backend = "https://ttm4115-quiz-backend.herokuapp.com";
 
 class QuizPage extends StatefulWidget {
-  const QuizPage({Key? key, required this.title}) : super(key: key);
+  const QuizPage({Key? key, required this.title, required this.teamName})
+      : super(key: key);
   final String title;
+  final String teamName;
   @override
   State<QuizPage> createState() => _QuizPage();
 }
@@ -27,6 +29,7 @@ class _QuizPage extends State<QuizPage> {
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       await fetchQuestions();
       setState(() {});
+      super.initState();
     });
   }
 
@@ -105,10 +108,11 @@ class _QuizPage extends State<QuizPage> {
   void _getScore() async {
     // Send answsers to server
     // TODO: add name
-    Map data = {'answers': _answers, "name": "emir"};
+    Map data = {'answers': _answers, "name": widget.teamName};
     await http.post(Uri.parse(backend + "/room/1/"),
         headers: {"Content-Type": "application/json"}, body: json.encode(data));
-    final response = await http.get(Uri.parse(backend + "/score/1/emir"));
+    final response =
+        await http.get(Uri.parse(backend + "/score/1/${widget.teamName}"));
     _score = response.body;
   }
 
