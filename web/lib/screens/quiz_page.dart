@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:web/modules/question.dart';
+import 'package:web/screens/quiz_score_page.dart';
 //import 'package:web/widgets/quiz_widgets/quiz_answer.dart';
 //import 'package:web/widgets/quiz_widgets/quiz_question.dart';
 
@@ -22,7 +23,6 @@ class _QuizPage extends State<QuizPage> {
   late Question currentQuestion;
   int _currentQuestionIndex = 0;
   List<String> _answers = [];
-  String _score = "";
 
   @override
   void initState() {
@@ -113,7 +113,14 @@ class _QuizPage extends State<QuizPage> {
         headers: {"Content-Type": "application/json"}, body: json.encode(data));
     final response =
         await http.get(Uri.parse(backend + "/score/1/${widget.teamName}"));
-    _score = response.body;
+    final score = response.body;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => QuizScore(
+                score: score,
+              )),
+    );
   }
 
   void _getNextQuestion() async {
