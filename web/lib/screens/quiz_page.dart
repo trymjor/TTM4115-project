@@ -6,6 +6,8 @@ import 'package:web/modules/question.dart';
 //import 'package:web/widgets/quiz_widgets/quiz_answer.dart';
 //import 'package:web/widgets/quiz_widgets/quiz_question.dart';
 
+final String backend = "https://ttm4115-quiz-backend.herokuapp.com";
+
 class QuizPage extends StatefulWidget {
   const QuizPage({Key? key, required this.title}) : super(key: key);
   final String title;
@@ -64,7 +66,7 @@ class _QuizPage extends State<QuizPage> {
   }
 
   Future<void> fetchQuestions() async {
-    final response = await http.get(Uri.parse("http://localhost:3000/room/1"));
+    final response = await http.get(Uri.parse(backend + "/room/1"));
     Map<String, dynamic> data = jsonDecode(response.body);
     for (var entry in data['questions']) {
       final question = Question(
@@ -104,10 +106,9 @@ class _QuizPage extends State<QuizPage> {
     // Send answsers to server
     // TODO: add name
     Map data = {'answers': _answers, "name": "emir"};
-    await http.post(Uri.parse("http://localhost:3000/room/1/"),
+    await http.post(Uri.parse(backend + "/room/1/"),
         headers: {"Content-Type": "application/json"}, body: json.encode(data));
-    final response =
-        await http.get(Uri.parse("http://localhost:3000/score/1/emir"));
+    final response = await http.get(Uri.parse(backend + "/score/1/emir"));
     _score = response.body;
   }
 
