@@ -45,32 +45,6 @@ class _HomePage extends State<HomePage> {
           ],
         ),
       ),
-      floatingActionButton: Container(
-        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            FloatingActionButton(
-              heroTag: "Join Button",
-              onPressed: () {
-                print("Lobby joined.");
-              },
-              child: const Icon(Icons.wheelchair_pickup),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            FloatingActionButton(
-                heroTag: "Create Button",
-                onPressed: () {
-                  print("Lobby created.");
-                },
-                child: const Icon(
-                  Icons.add,
-                )),
-          ],
-        ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
