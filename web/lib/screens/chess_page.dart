@@ -15,6 +15,7 @@ class ChessPage extends StatefulWidget {
 
 class _ChessPage extends State<ChessPage> {
   ChessBoardController controller = ChessBoardController();
+  late bool userTurn;
 
   String isGameOver() {
     if (controller.isGameOver()) {
@@ -27,7 +28,6 @@ class _ChessPage extends State<ChessPage> {
     if (controller.isGameOver()) {
       await Future.delayed(Duration(seconds: 3));
       controller.resetBoard();
-      sendFen(controller.getFen());
     }
   }
 
@@ -35,6 +35,7 @@ class _ChessPage extends State<ChessPage> {
   void initState() {
     connectToBroker();
     super.initState();
+    checkUserTurn();
   }
 
   @override
@@ -52,8 +53,10 @@ class _ChessPage extends State<ChessPage> {
               size: 500,
               boardColor: BoardColor.orange,
               boardOrientation: PlayerColor.white,
+              enableUserMoves: userTurn,
               onMove: () {
                 sendFen(controller.getFen());
+                checkUserTurn();
               },
             ),
           ),
@@ -69,6 +72,15 @@ class _ChessPage extends State<ChessPage> {
         ],
       ),
     );
+  }
+
+  void checkUserTurn() {
+    if (controller.getPossibleMoves().first.color.name == "WHITE") {
+      userTurn = true;
+    } else {
+      userTurn = false;
+    }
+    setState(() {});
   }
 
   var gameFEN = "";
@@ -115,6 +127,7 @@ class _ChessPage extends State<ChessPage> {
       client.disconnect();
       return;
     }
+    print(controller.getPossibleMoves().first.color.name);
     const pubTopic = 'ramindra3';
     client.subscribe(pubTopic, MqttQos.exactlyOnce);
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
