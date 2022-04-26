@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:web/screens/quiz_page.dart';
+import 'package:web/screens/welcome_page.dart';
 
 class QuizCard extends StatefulWidget {
   const QuizCard({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class _QuizCard extends State<QuizCard> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => const QuizPage(
+              builder: (context) => const WelcomePage(
                     title: 'Quiz Page',
                   )),
         );
