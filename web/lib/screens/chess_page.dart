@@ -16,6 +16,7 @@ class ChessPage extends StatefulWidget {
 class _ChessPage extends State<ChessPage> {
   ChessBoardController controller = ChessBoardController();
   late bool userTurn;
+  Color teamColor = Color.WHITE;
 
   String isGameOver() {
     if (controller.isGameOver()) {
@@ -52,18 +53,24 @@ class _ChessPage extends State<ChessPage> {
             ),
             child: PopupMenuButton<int>(
               onSelected: (item) => print(item),
-              child: Padding(
+              child: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                 child: Text("Menu"),
               ),
               itemBuilder: (context) => [
                 PopupMenuItem<int>(
                   value: 0,
-                  child: Text('Black'),
+                  child: const Text('Black'),
+                  onTap: () {
+                    teamColor = Color.BLACK;
+                  },
                 ),
                 PopupMenuItem<int>(
                   value: 1,
-                  child: Text('White'),
+                  child: const Text('White'),
+                  onTap: () {
+                    teamColor = Color.WHITE;
+                  },
                 ),
               ],
             ),
@@ -100,7 +107,7 @@ class _ChessPage extends State<ChessPage> {
   }
 
   void checkUserTurn() {
-    if (controller.getPossibleMoves().first.color.name == "WHITE") {
+    if (controller.game.turn == teamColor) {
       userTurn = true;
     } else {
       userTurn = false;
