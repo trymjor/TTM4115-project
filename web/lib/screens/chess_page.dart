@@ -56,7 +56,6 @@ class _ChessPage extends State<ChessPage> {
               enableUserMoves: userTurn,
               onMove: () {
                 sendFen(controller.getFen());
-                checkUserTurn();
               },
             ),
           ),
@@ -110,6 +109,7 @@ class _ChessPage extends State<ChessPage> {
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       controller.loadFen(gameFEN);
       print(controller.getFen());
+      checkUserTurn();
     });
     await MqttUtilities.asyncSleep(60);
     client.unsubscribe("ramindra3");
@@ -135,6 +135,7 @@ class _ChessPage extends State<ChessPage> {
       gameFEN =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       controller.loadFen(gameFEN);
+      checkUserTurn();
       print(controller.getFen());
     });
     await MqttUtilities.asyncSleep(60);
