@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/flutter_chess_board.dart';
@@ -16,14 +18,17 @@ class _ChessPage extends State<ChessPage> {
 
   String isGameOver() {
     if (controller.isGameOver()) {
-      return "Game Over!";
+      return "Game over! Resetting game";
     }
     return "";
   }
 
-  void resetGame() {
-    controller.resetBoard();
-    sendFen(controller.getFen());
+  void resetGame() async {
+    if (controller.isGameOver()) {
+      await Future.delayed(Duration(seconds: 3));
+      controller.resetBoard();
+      sendFen(controller.getFen());
+    }
   }
 
   @override
@@ -56,22 +61,9 @@ class _ChessPage extends State<ChessPage> {
             child: ValueListenableBuilder<Chess>(
                 valueListenable: controller,
                 builder: (context, game, _) {
+                  resetGame();
                   return Text(isGameOver(),
                       textAlign: TextAlign.center, textScaleFactor: 2);
-                }),
-          ),
-          Center(
-            child: ValueListenableBuilder<Chess>(
-                valueListenable: controller,
-                builder: (context, game, _) {
-                  return TextButton(
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.all(16.0),
-                        primary: Colors.red,
-                        textStyle: const TextStyle(fontSize: 10),
-                      ),
-                      onPressed: resetGame,
-                      child: const Text("Restart Game"));
                 }),
           ),
         ],
