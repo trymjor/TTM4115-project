@@ -43,6 +43,32 @@ class _ChessPage extends State<ChessPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chess'),
+        actions: [
+          Theme(
+            data: Theme.of(context).copyWith(
+              dividerColor: Colors.white,
+              iconTheme: IconThemeData(color: Colors.white),
+              textTheme: TextTheme().apply(bodyColor: Colors.white),
+            ),
+            child: PopupMenuButton<int>(
+              onSelected: (item) => print(item),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                child: Text("Menu"),
+              ),
+              itemBuilder: (context) => [
+                PopupMenuItem<int>(
+                  value: 0,
+                  child: Text('Black'),
+                ),
+                PopupMenuItem<int>(
+                  value: 1,
+                  child: Text('White'),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
