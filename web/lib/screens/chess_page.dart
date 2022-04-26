@@ -15,6 +15,9 @@ class ChessPage extends StatefulWidget {
 
 class _ChessPage extends State<ChessPage> {
   ChessBoardController controller = ChessBoardController();
+  late bool userTurn;
+  PlayerColor playerColor = PlayerColor.white;
+  Color teamColor = Color.WHITE;
 
   String isGameOver() {
     if (controller.isGameOver()) {
@@ -27,7 +30,6 @@ class _ChessPage extends State<ChessPage> {
     if (controller.isGameOver()) {
       await Future.delayed(Duration(seconds: 3));
       controller.resetBoard();
-      sendFen(controller.getFen());
     }
   }
 
@@ -35,6 +37,7 @@ class _ChessPage extends State<ChessPage> {
   void initState() {
     connectToBroker();
     super.initState();
+    checkUserTurn();
   }
 
   @override
@@ -50,19 +53,32 @@ class _ChessPage extends State<ChessPage> {
               textTheme: TextTheme().apply(bodyColor: Colors.white),
             ),
             child: PopupMenuButton<int>(
-              onSelected: (item) => print(item),
-              child: Padding(
+              child: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                 child: Text("Menu"),
               ),
               itemBuilder: (context) => [
                 PopupMenuItem<int>(
                   value: 0,
-                  child: Text('Black'),
+                  child: const Text('Black'),
+                  onTap: () {
+                    setState(() {
+                      teamColor = Color.BLACK;
+                      playerColor = PlayerColor.black;
+                      checkUserTurn();
+                    });
+                  },
                 ),
                 PopupMenuItem<int>(
                   value: 1,
-                  child: Text('White'),
+                  child: const Text('White'),
+                  onTap: () {
+                    setState(() {
+                      teamColor = Color.WHITE;
+                      playerColor = PlayerColor.white;
+                      checkUserTurn();
+                    });
+                  },
                 ),
               ],
             ),
@@ -77,7 +93,8 @@ class _ChessPage extends State<ChessPage> {
               controller: controller,
               size: 500,
               boardColor: BoardColor.orange,
-              boardOrientation: PlayerColor.white,
+              boardOrientation: playerColor,
+              enableUserMoves: userTurn,
               onMove: () {
                 sendFen(controller.getFen());
               },
@@ -95,6 +112,15 @@ class _ChessPage extends State<ChessPage> {
         ],
       ),
     );
+  }
+
+  void checkUserTurn() {
+    if (controller.game.turn == teamColor) {
+      userTurn = true;
+    } else {
+      userTurn = false;
+    }
+    setState(() {});
   }
 
   var gameFEN = "";
@@ -124,6 +150,7 @@ class _ChessPage extends State<ChessPage> {
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       controller.loadFen(gameFEN);
       print(controller.getFen());
+      checkUserTurn();
     });
     await MqttUtilities.asyncSleep(60);
     client.unsubscribe("ramindra3");
@@ -148,6 +175,7 @@ class _ChessPage extends State<ChessPage> {
       gameFEN =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       controller.loadFen(gameFEN);
+      checkUserTurn();
       print(controller.getFen());
     });
     await MqttUtilities.asyncSleep(60);
