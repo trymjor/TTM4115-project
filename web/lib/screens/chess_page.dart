@@ -16,6 +16,7 @@ class ChessPage extends StatefulWidget {
 class _ChessPage extends State<ChessPage> {
   ChessBoardController controller = ChessBoardController();
   late bool userTurn;
+  PlayerColor playerColor = PlayerColor.white;
   Color teamColor = Color.WHITE;
 
   String isGameOver() {
@@ -52,7 +53,6 @@ class _ChessPage extends State<ChessPage> {
               textTheme: TextTheme().apply(bodyColor: Colors.white),
             ),
             child: PopupMenuButton<int>(
-              onSelected: (item) => print(item),
               child: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                 child: Text("Menu"),
@@ -62,14 +62,22 @@ class _ChessPage extends State<ChessPage> {
                   value: 0,
                   child: const Text('Black'),
                   onTap: () {
-                    teamColor = Color.BLACK;
+                    setState(() {
+                      teamColor = Color.BLACK;
+                      playerColor = PlayerColor.black;
+                      checkUserTurn();
+                    });
                   },
                 ),
                 PopupMenuItem<int>(
                   value: 1,
                   child: const Text('White'),
                   onTap: () {
-                    teamColor = Color.WHITE;
+                    setState(() {
+                      teamColor = Color.WHITE;
+                      playerColor = PlayerColor.white;
+                      checkUserTurn();
+                    });
                   },
                 ),
               ],
@@ -85,7 +93,7 @@ class _ChessPage extends State<ChessPage> {
               controller: controller,
               size: 500,
               boardColor: BoardColor.orange,
-              boardOrientation: PlayerColor.white,
+              boardOrientation: playerColor,
               enableUserMoves: userTurn,
               onMove: () {
                 sendFen(controller.getFen());
@@ -160,7 +168,6 @@ class _ChessPage extends State<ChessPage> {
       client.disconnect();
       return;
     }
-    print(controller.getPossibleMoves().first.color.name);
     const pubTopic = 'ramindra3';
     client.subscribe(pubTopic, MqttQos.exactlyOnce);
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
