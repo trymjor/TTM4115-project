@@ -30,6 +30,7 @@ class _ChessPage extends State<ChessPage> {
     if (controller.isGameOver()) {
       await Future.delayed(Duration(seconds: 3));
       controller.resetBoard();
+      sendFen(controller.getFen());
     }
   }
 
@@ -157,6 +158,7 @@ class _ChessPage extends State<ChessPage> {
     client.unsubscribe("ramindra3");
     print("disconnecting");
     client.disconnect();
+    client.autoReconnect;
     return;
   }
 
@@ -183,6 +185,7 @@ class _ChessPage extends State<ChessPage> {
     client.unsubscribe("ramindra3");
     print("disconnecting");
     client.disconnect();
+    client.autoReconnect = true;
     return;
   }
 }
