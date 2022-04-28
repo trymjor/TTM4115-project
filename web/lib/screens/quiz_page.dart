@@ -41,30 +41,25 @@ class _QuizPage extends State<QuizPage> {
         centerTitle: true,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                quizQuestions[_currentQuestionIndex].question,
-                style: TextStyle(fontSize: 20),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  quizQuestions[_currentQuestionIndex].question,
+                  style: TextStyle(fontSize: 20),
+                ),
               ),
-            ),
-            Container(
-              width: 500,
-              height: 500,
-              child: getQuestionChoices(),
-            ),
-          ],
+              Container(
+                width: 500,
+                height: 500,
+                child: getQuestionChoices(),
+              ),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _getNextQuestion();
-        },
-        backgroundColor: Colors.blue,
-        child: const Icon(Icons.navigation),
       ),
     );
   }

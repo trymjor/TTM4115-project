@@ -147,7 +147,6 @@ class _ChessPage extends State<ChessPage> {
   void sendFen(String fen) async {
     try {
       await client.connect();
-      print("connected");
     } on Exception catch (e) {
       print("could not connect");
       client.disconnect();
@@ -165,12 +164,10 @@ class _ChessPage extends State<ChessPage> {
       gameFEN =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       controller.loadFen(gameFEN);
-      print(controller.getFen());
       checkUserTurn();
     });
     await MqttUtilities.asyncSleep(60);
     client.unsubscribe("ramindra3");
-    print("disconnecting");
     client.disconnect();
     client.autoReconnect;
     return;
@@ -179,7 +176,6 @@ class _ChessPage extends State<ChessPage> {
   void connectToBroker() async {
     try {
       await client.connect();
-      print("connected");
     } on Exception catch (e) {
       print("could not connect");
       client.disconnect();
@@ -193,11 +189,9 @@ class _ChessPage extends State<ChessPage> {
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       controller.loadFen(gameFEN);
       checkUserTurn();
-      print(controller.getFen());
     });
     await MqttUtilities.asyncSleep(60);
     client.unsubscribe("ramindra3");
-    print("disconnecting");
     client.disconnect();
     client.autoReconnect = true;
     return;

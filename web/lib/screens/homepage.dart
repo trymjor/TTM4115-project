@@ -19,30 +19,32 @@ class _HomePage extends State<HomePage> {
         centerTitle: true,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(30),
-              child: Text(
-                'Join or create a new lobby:',
-                style: Theme.of(context).textTheme.headline2,
-              ),
-            ),
-            Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const <Widget>[
-                    OnHoverCard(child: ChessGameCard()),
-                    OnHoverCard(child: QuizCard()),
-                  ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(30),
+                child: Text(
+                  'Join or create a new lobby:',
+                  style: Theme.of(context).textTheme.headline2,
                 ),
-                const OnHoverCard(child: VideoCard()),
-              ],
-            ),
-          ],
+              ),
+              Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const <Widget>[
+                      OnHoverCard(child: ChessGameCard()),
+                      OnHoverCard(child: QuizCard()),
+                    ],
+                  ),
+                  const OnHoverCard(child: VideoCard()),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
