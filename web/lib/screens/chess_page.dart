@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/flutter_chess_board.dart';
@@ -13,23 +15,29 @@ class ChessPage extends StatefulWidget {
 
 class _ChessPage extends State<ChessPage> {
   ChessBoardController controller = ChessBoardController();
+  late bool userTurn;
+  PlayerColor playerColor = PlayerColor.white;
+  Color teamColor = Color.WHITE;
 
   String isGameOver() {
     if (controller.isGameOver()) {
-      return "Game Over!";
+      return "Game over! Resetting game";
     }
     return "";
   }
 
-  void resetGame() {
-    controller.resetBoard();
-    sendFen(controller.getFen());
+  void resetGame() async {
+    if (controller.isGameOver()) {
+      await Future.delayed(Duration(seconds: 3));
+      controller.resetBoard();
+    }
   }
 
   @override
   void initState() {
     connectToBroker();
     super.initState();
+    checkUserTurn();
   }
 
   @override
@@ -37,6 +45,45 @@ class _ChessPage extends State<ChessPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chess'),
+        actions: [
+          Theme(
+            data: Theme.of(context).copyWith(
+              dividerColor: Colors.white,
+              iconTheme: IconThemeData(color: Colors.white),
+              textTheme: TextTheme().apply(bodyColor: Colors.white),
+            ),
+            child: PopupMenuButton<int>(
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                child: Text("Menu"),
+              ),
+              itemBuilder: (context) => [
+                PopupMenuItem<int>(
+                  value: 0,
+                  child: const Text('Black'),
+                  onTap: () {
+                    setState(() {
+                      teamColor = Color.BLACK;
+                      playerColor = PlayerColor.black;
+                      checkUserTurn();
+                    });
+                  },
+                ),
+                PopupMenuItem<int>(
+                  value: 1,
+                  child: const Text('White'),
+                  onTap: () {
+                    setState(() {
+                      teamColor = Color.WHITE;
+                      playerColor = PlayerColor.white;
+                      checkUserTurn();
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -46,7 +93,8 @@ class _ChessPage extends State<ChessPage> {
               controller: controller,
               size: 500,
               boardColor: BoardColor.orange,
-              boardOrientation: PlayerColor.white,
+              boardOrientation: playerColor,
+              enableUserMoves: userTurn,
               onMove: () {
                 sendFen(controller.getFen());
               },
@@ -56,27 +104,23 @@ class _ChessPage extends State<ChessPage> {
             child: ValueListenableBuilder<Chess>(
                 valueListenable: controller,
                 builder: (context, game, _) {
+                  resetGame();
                   return Text(isGameOver(),
                       textAlign: TextAlign.center, textScaleFactor: 2);
-                }),
-          ),
-          Center(
-            child: ValueListenableBuilder<Chess>(
-                valueListenable: controller,
-                builder: (context, game, _) {
-                  return TextButton(
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.all(16.0),
-                        primary: Colors.red,
-                        textStyle: const TextStyle(fontSize: 10),
-                      ),
-                      onPressed: resetGame,
-                      child: const Text("Restart Game"));
                 }),
           ),
         ],
       ),
     );
+  }
+
+  void checkUserTurn() {
+    if (controller.game.turn == teamColor) {
+      userTurn = true;
+    } else {
+      userTurn = false;
+    }
+    setState(() {});
   }
 
   var gameFEN = "";
@@ -106,6 +150,7 @@ class _ChessPage extends State<ChessPage> {
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       controller.loadFen(gameFEN);
       print(controller.getFen());
+      checkUserTurn();
     });
     await MqttUtilities.asyncSleep(60);
     client.unsubscribe("ramindra3");
@@ -130,6 +175,7 @@ class _ChessPage extends State<ChessPage> {
       gameFEN =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       controller.loadFen(gameFEN);
+      checkUserTurn();
       print(controller.getFen());
     });
     await MqttUtilities.asyncSleep(60);
