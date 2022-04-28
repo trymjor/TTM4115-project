@@ -90,6 +90,20 @@ class _ChessPage extends State<ChessPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                controller.game.turn.name,
+                style: TextStyle(
+                    color: Colors.grey[800],
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'Open Sans',
+                    fontSize: 40),
+              ),
+            ),
+          ),
+          Center(
             child: ChessBoard(
               controller: controller,
               size: 500,
