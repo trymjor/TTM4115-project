@@ -55,9 +55,7 @@ class Raspberry_Pi:
 init = {
     'source': 'initial',
     'target': 'idle',
-    'effect': 'on_init',
-    'effect': 'turn_chess_light_off',
-    'effect': 'turn_chess_light_off'}
+    'effect': 'on_init; turn_chess_light_off; turn_chess_light_off'}
 
 #Chess
 chess_turn_enabled = {
@@ -77,7 +75,7 @@ videocall_enable = {
     'trigger': 'first_person_remote',
     'source': 'idle',
     'target': 'videocall',
-    'effect': 'turn_vc_light_on;start_timer("t", 60000)'}
+    'effect': 'turn_vc_light_on;start_timer("t", "60000")'}
 
 videocall_disable = {
     'trigger': 't',
@@ -99,14 +97,8 @@ chess_to_vc_1 = {
     'target': 'vc_chess',
     'effect': 'turn_vc_light_on'}
 
-chess_to_vc_2 = {
-    'trigger': 'first_person_detected',
-    'source': 'chess',
-    'target': 'vc_chess',
-    'effect': 'turn_vc_light_on'}
-
 exit_to_chess = {
-    'trigger': 'no_people_left',
+    'trigger': 't',
     'source': 'vc_chess',
     'target': 'chess',
     'effect': 'turn_vc_light_off'}
@@ -176,7 +168,7 @@ class MQTT_Client_1:
 
 
 raspb = Raspberry_Pi()
-raspb_pi_machine = Machine(name='raspb_pi', transitions=[init, chess_turn_enabled, chess_turn_disabled, videocall_enable, videocall_disable, vc_to_chess, chess_to_vc_1, chess_to_vc_2, exit_to_chess, exit_to_vc], obj=raspb, states=[idle, chess, videocall, vc_chess])
+raspb_pi_machine = Machine(name='raspb_pi', transitions=[init, chess_turn_enabled, chess_turn_disabled, videocall_enable, videocall_disable, vc_to_chess, chess_to_vc_1, exit_to_chess, exit_to_vc], obj=raspb, states=[idle, chess, videocall, vc_chess])
 raspb.stm = raspb_pi_machine
 
 
@@ -189,3 +181,4 @@ myclient.stm_driver = driver
 
 driver.start()
 myclient.start(broker, port)
+
