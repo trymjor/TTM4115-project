@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:web/screens/chess_page.dart';
 
+///Each Card is used as a routing element for a new page.
 class ChessGameCard extends StatefulWidget {
   const ChessGameCard({Key? key}) : super(key: key);
   @override

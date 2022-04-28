@@ -143,7 +143,8 @@ class _ChessPage extends State<ChessPage> {
     final builder = MqttClientPayloadBuilder();
     builder.addString(fen);
     client.subscribe(pubTopic, MqttQos.exactlyOnce);
-    client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload!);
+    client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload!,
+        retain: true);
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       final recMess = c![0].payload as MqttPublishMessage;
       gameFEN =
