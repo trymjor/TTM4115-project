@@ -9,6 +9,7 @@ import 'package:web/screens/quiz_score_page.dart';
 
 final String backend = "https://ttm4115-quiz-backend.herokuapp.com";
 
+/// QuizPage
 class QuizPage extends StatefulWidget {
   const QuizPage({Key? key, required this.title, required this.teamName})
       : super(key: key);
@@ -81,7 +82,7 @@ class _QuizPage extends State<QuizPage> {
 
   ListView getQuestionChoices() {
     return ListView.builder(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       // Let the ListView know how many items it needs to build.
       itemCount: quizQuestions[_currentQuestionIndex].answersChoices.length,
       // Provide a builder function. This is where the magic happens.
@@ -105,9 +106,9 @@ class _QuizPage extends State<QuizPage> {
     );
   }
 
+  /// Sendes score to server and navigates to QuizScore page
   void _getScore() async {
     // Send answsers to server
-    // TODO: add name
     Map data = {'answers': _answers, "name": widget.teamName};
     await http.post(Uri.parse(backend + "/room/1/"),
         headers: {"Content-Type": "application/json"}, body: json.encode(data));
@@ -123,24 +124,23 @@ class _QuizPage extends State<QuizPage> {
     );
   }
 
+  /// Gets new quizquestion from server and displays it
   void _getNextQuestion() async {
     if (_currentQuestionIndex >= quizQuestions.length - 1) {
       print("Quiz over");
       _getScore();
     } else {
       _currentQuestionIndex++;
-      _updateQuestionText();
-      getQuestionChoices();
+      setState(() {
+        getQuestionChoices();
+      });
     }
   }
 
+  /// Checks if the given [answer] is correct
   _checkAnswer(String answer) {
     _answers.add(answer);
     _getNextQuestion();
     print("Questions left: ${10 - _currentQuestionIndex}");
-  }
-
-  void _updateQuestionText() {
-    setState(() {});
   }
 }

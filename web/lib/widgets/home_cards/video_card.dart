@@ -8,6 +8,7 @@ import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'dart:typed_data';
 
+///Each Card is used as a routing element for a new page.
 class VideoCard extends StatefulWidget {
   const VideoCard({Key? key}) : super(key: key);
   @override

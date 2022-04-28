@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:web/screens/quiz_page.dart';
 import 'package:web/screens/welcome_page.dart';
 
+///Each Card is used as a routing element for a new page.
 class QuizCard extends StatefulWidget {
   const QuizCard({Key? key}) : super(key: key);
   @override
