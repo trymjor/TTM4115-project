@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/flutter_chess_board.dart';
 import 'package:mqtt_client/mqtt_browser_client.dart';
@@ -19,6 +16,7 @@ class _ChessPage extends State<ChessPage> {
   PlayerColor playerColor = PlayerColor.white;
   Color teamColor = Color.WHITE;
 
+//Function for checking if the game has ended
   String isGameOver() {
     if (controller.isGameOver()) {
       return "Game over! Resetting game";
@@ -26,6 +24,7 @@ class _ChessPage extends State<ChessPage> {
     return "";
   }
 
+//Function for resetting the game three seconds after it has ended
   void resetGame() async {
     if (controller.isGameOver()) {
       await Future.delayed(Duration(seconds: 3));
@@ -34,6 +33,7 @@ class _ChessPage extends State<ChessPage> {
     }
   }
 
+//Connect to broker on build, also check if we can move
   @override
   void initState() {
     connectToBroker();
@@ -41,6 +41,8 @@ class _ChessPage extends State<ChessPage> {
     checkUserTurn();
   }
 
+/*Build the board. Functionality for selecting a team, getting the correct board orientation 
+and sending a FEN to the broker on every move. Listener for resetting the game whenever it is over*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,6 +131,7 @@ class _ChessPage extends State<ChessPage> {
     );
   }
 
+//Check if it is black or whites turn
   void checkUserTurn() {
     if (controller.game.turn == teamColor) {
       userTurn = true;
@@ -138,12 +141,15 @@ class _ChessPage extends State<ChessPage> {
     setState(() {});
   }
 
+//initate gameFEN string and MQTT client obejct
   var gameFEN = "";
   final client = MqttBrowserClient('ws://test.mosquitto.org', '')
     ..setProtocolV311()
     ..keepAlivePeriod = 2000
     ..port = 8080
     ..websocketProtocols = MqttClientConstants.protocolsSingleDefault;
+
+  //Function for sending chess fens to the broker, also listen for incoming fens and update the board.
   void sendFen(String fen) async {
     try {
       await client.connect();
@@ -173,6 +179,7 @@ class _ChessPage extends State<ChessPage> {
     return;
   }
 
+//initial connection to the broker, listen for fens.
   void connectToBroker() async {
     try {
       await client.connect();
