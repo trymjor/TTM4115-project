@@ -1,6 +1,8 @@
 # TTM4115-project
 
-<img src="TTM-4115_screenshot.png" height="400">
+<p align="center">
+    <img src="TTM-4115_screenshot.png" height="400">
+</p>
 
 ## Table of contents
 - [General info](#general-info)
