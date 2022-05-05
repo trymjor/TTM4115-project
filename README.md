@@ -31,6 +31,6 @@ and a chess game to try and start "informal" conversation across team members.
 - Google chrome does not support the websockets, please use another browser such as Mozilla Firefox.
 
 ## Starting the quiz
-In order to start the quiz an empty post request has to be sent to /room, which creates a quiz room with 10 questions. 
+In order to start the quiz an empty POST request has to be sent to /room, which creates a quiz room with 10 questions. 
 This is because one of our ideas was to implement multiple concurrent quiz rooms where players could join, 
 but we simplified the idea to just be one main quiz with a leaderboard. 
