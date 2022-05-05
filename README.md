@@ -1,10 +1,13 @@
 # TTM4115-project
 
+![Web Application!](TTM-4115_screenshot.png)
+
 ## Table of contents
 - [General info](#general-info)
 - [Main file structure](#main-file-structure)
 - [Link to web applicaiton](#link-to-web-applicaiton)
 - [Constraints](#constraints)
+- [Starting the quiz](#starting-the-quiz)
 
 ## General info
 This project aims to create a communication device for members of a development team or office 
@@ -24,3 +27,8 @@ and a chessboard.
 ## Constraints
 - Since the mqtt protocol we have implemented uses websockets you have to use http and not https.
 - Google chrome does not support the web sockets, please use another browser such as Mozilla Firefox.
+
+## Starting the quiz
+In order to start the quiz an empty post request has to be sent to /room, which creates a quiz room with 10 questions. 
+This is because one of our ideas was to implement multiple concurrent quiz rooms where players could join, 
+but we simplified the idea to just be one main quiz with a leaderboard. 
