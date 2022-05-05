@@ -1,6 +1,6 @@
 # TTM4115-project
 
-![Web Application!](TTM-4115_screenshot.png)
+![Web Application!](TTM-4115_screenshot.png =x750)
 
 ## Table of contents
 - [General info](#general-info)
