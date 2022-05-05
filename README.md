@@ -27,8 +27,8 @@ and a chess game to try and start "informal" conversation across team members.
 [Web application](http://ttm4115-quiz-backend.herokuapp.com/#/)
 
 ## Constraints
-- Since the mqtt protocol we have implemented uses websockets you have to use http and not https.
-- Google chrome does not support the web sockets, please use another browser such as Mozilla Firefox.
+- Since the mqtt client we have implemented in flutter uses websockets you have to use http and not https.
+- Google chrome does not support the websockets, please use another browser such as Mozilla Firefox.
 
 ## Starting the quiz
 In order to start the quiz an empty post request has to be sent to /room, which creates a quiz room with 10 questions. 
