@@ -14,8 +14,8 @@
 ## General info
 This project aims to create a communication device for members of a development team or office 
 that is distributed in at least 2 office locations, together with persons working from home.
-To solve this the group has created a web application that integrates Zoom and includes a quiz
-and a chessboard.
+The group has created a web application that integrates Zoom and includes a quiz
+and a chess game to try and start "informal" conversation across team members.
 
 ## Main file structure
     .
