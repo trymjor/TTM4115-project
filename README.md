@@ -3,8 +3,8 @@
 ## Table of contents
 - [General info](#general-info)
 - [Main file structure](#main-file-structure)
-- [Game technologies](#game-technologies)
-- [Start development](#start-development)
+- [Link to web applicaiton](#link-to-web-applicaiton)
+- [Constraints](#constraints)
 
 ## General info
 This project aims to create a communication device for members of a development team or office 
